@@ -6,20 +6,15 @@
     Provides ROS plugins that offer message and service publishers for interfacing with <a href="http://gazebosim.org">Gazebo</a> through ROS.
     Formally simulator_gazebo/gazebo
   </description>
-
   <maintainer email="hsu@osrfoundation.org">John Hsu</maintainer>
   <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
-
   <license>Apache 2.0</license>
-
   <url type="website">http://gazebosim.org/tutorials?cat=connect_ros</url>
   <url type="bugtracker">https://github.com/ros-simulation/gazebo_ros_pkgs/issues</url>
   <url type="repository">https://github.com/ros-simulation/gazebo_ros_pkgs</url>
-
   <author>John Hsu</author>
   <author>Nate Koenig</author>
   <author>Dave Coleman</author>
-
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>cmake_modules</build_depend>
@@ -51,5 +46,4 @@
   <run_depend>message_generation</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>tinyxml</run_depend>
-
 </package>

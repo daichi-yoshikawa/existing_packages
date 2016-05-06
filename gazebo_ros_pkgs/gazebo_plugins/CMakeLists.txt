@@ -1,33 +1,45 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(gazebo_plugins)
 
-find_package(catkin REQUIRED COMPONENTS 
-  message_generation 
-  gazebo_msgs 
-  roscpp 
-  rospy 
-  nodelet 
-  angles 
-  std_srvs 
-  geometry_msgs 
-  sensor_msgs 
-  nav_msgs 
-  urdf 
-  tf 
-  tf2_ros 
-  dynamic_reconfigure 
-  driver_base 
-  rosgraph_msgs 
-  trajectory_msgs 
-  image_transport 
-  rosconsole
-  cv_bridge
-  polled_camera
-  diagnostic_updater
-  camera_info_manager
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
+check_cxx_compiler_flag("-std=c++0x" COMPILER_SUPPORTS_CXX0x)
+if(COMPILER_SUPPORTS_CXX11)
+  set(CMAKE_CXX_FLAGS "-std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+  set(CMAKE_CXX_FLAGS "-std=c++0x")
+else()
+  message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+find_package(catkin REQUIRED
+  COMPONENTS 
+    message_generation 
+    gazebo_msgs 
+    roscpp 
+    rospy 
+    nodelet 
+    angles 
+    std_srvs 
+    geometry_msgs 
+    sensor_msgs 
+    nav_msgs 
+    urdf 
+    tf 
+    tf2_ros 
+    dynamic_reconfigure 
+    driver_base 
+    rosgraph_msgs 
+    trajectory_msgs 
+    image_transport 
+    rosconsole
+    cv_bridge
+    polled_camera
+    diagnostic_updater
+    camera_info_manager
 )
 
-include (FindPkgConfig)
+include(FindPkgConfig)
 if (PKG_CONFIG_FOUND)
   pkg_check_modules(XML libxml-2.0)
   pkg_check_modules(OGRE OGRE)
@@ -56,7 +68,8 @@ generate_dynamic_reconfigure_options(
   cfg/Hokuyo.cfg
 )
 
-include_directories(include
+include_directories(
+  include
   ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
@@ -75,67 +88,65 @@ link_directories(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES 
-  vision_reconfigure 
-  gazebo_ros_utils 
-  gazebo_ros_camera_utils 
-  gazebo_ros_camera 
-  gazebo_ros_multicamera 
-  gazebo_ros_depth_camera 
-  gazebo_ros_openni_kinect 
-  gazebo_ros_gpu_laser 
-  gazebo_ros_laser 
-  gazebo_ros_block_laser 
-  gazebo_ros_p3d 
-  gazebo_ros_imu 
-  gazebo_ros_f3d 
-  gazebo_ros_ft_sensor
-  gazebo_ros_bumper 
-  gazebo_ros_template 
-  gazebo_ros_projector 
-  gazebo_ros_prosilica 
-  gazebo_ros_force 
-  gazebo_ros_joint_trajectory 
-  gazebo_ros_joint_state_publisher 
-  gazebo_ros_joint_pose_trajectory
-  gazebo_ros_diff_drive
-  gazebo_ros_tricycle_drive
-  gazebo_ros_skid_steer_drive
-  gazebo_ros_video
-  gazebo_ros_planar_move
+    vision_reconfigure 
+    gazebo_ros_utils 
+    gazebo_ros_camera_utils 
+    gazebo_ros_camera 
+    gazebo_ros_multicamera 
+    gazebo_ros_depth_camera 
+    gazebo_ros_openni_kinect 
+    gazebo_ros_gpu_laser 
+    gazebo_ros_laser 
+    gazebo_ros_block_laser
+    gazebo_ros_p3d 
+    gazebo_ros_imu 
+    gazebo_ros_f3d 
+    gazebo_ros_ft_sensor
+    gazebo_ros_bumper 
+    gazebo_ros_template 
+    gazebo_ros_projector 
+    gazebo_ros_prosilica 
+    gazebo_ros_force 
+    gazebo_ros_joint_trajectory 
+    gazebo_ros_joint_state_publisher 
+    gazebo_ros_joint_pose_trajectory
+    gazebo_ros_diff_drive
+    gazebo_ros_tricycle_drive
+    gazebo_ros_skid_steer_drive
+    gazebo_ros_video
+    gazebo_ros_planar_move
   
   CATKIN_DEPENDS 
-  message_generation 
-  gazebo_msgs 
-  roscpp 
-  rospy 
-  nodelet 
-  angles 
-  std_srvs 
-  geometry_msgs 
-  sensor_msgs 
-  nav_msgs 
-  urdf 
-  tf 
-  tf2_ros
-  dynamic_reconfigure 
-  driver_base 
-  rosgraph_msgs 
-  trajectory_msgs 
-  image_transport 
-  rosconsole
-  camera_info_manager
+    message_generation 
+    gazebo_msgs 
+    roscpp 
+    rospy 
+    nodelet 
+    angles 
+    std_srvs 
+    geometry_msgs 
+    sensor_msgs 
+    nav_msgs 
+    urdf 
+    tf 
+    tf2_ros
+    dynamic_reconfigure 
+    driver_base 
+    rosgraph_msgs 
+    trajectory_msgs 
+    image_transport 
+    rosconsole
+    camera_info_manager
   DEPENDS 
     gazebo 
     SDF
-  )
+)
 add_dependencies(${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
 ## Executables
 add_executable(hokuyo_node src/hokuyo_node.cpp)
 add_dependencies(hokuyo_node ${PROJECT_NAME}_gencfg)
-target_link_libraries(hokuyo_node
-  ${catkin_LIBRARIES}
-)
+target_link_libraries(hokuyo_node ${catkin_LIBRARIES})
 
 add_library(gazebo_ros_utils src/gazebo_ros_utils.cpp)
 target_link_libraries(gazebo_ros_utils ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
@@ -292,7 +303,7 @@ install(TARGETS
   gazebo_ros_gpu_laser
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  )
+)
 
 install(DIRECTORY include/
    DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
@@ -301,15 +312,15 @@ install(DIRECTORY include/
 
 install(PROGRAMS scripts/set_wrench.py scripts/set_pose.py scripts/gazebo_model
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  )
+)
 
 install(DIRECTORY Media
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  )
+)
 
 install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  )
+)
 
 # Tests
 if (CATKIN_ENABLE_TESTING)

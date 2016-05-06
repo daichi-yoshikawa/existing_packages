@@ -447,15 +447,15 @@ private:
     double z;
   } Test;
 
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_effort_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_states_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_torque_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_force_x_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_force_y_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_force_z_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_moment_x_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_moment_y_;
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > external_moment_z_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > joint_effort_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > joint_states_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > joint_torque_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_force_x_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_force_y_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_force_z_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_moment_x_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_moment_y_;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> > external_moment_z_;
 
   std::map<std::string, ros::Duration> effort_time_;
   std::map<std::string, gazebo::physics::JointPtr> joint_;

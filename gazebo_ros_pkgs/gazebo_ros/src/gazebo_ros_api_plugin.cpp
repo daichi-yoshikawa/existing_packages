@@ -2516,9 +2516,9 @@ bool GazeboRosApiPlugin::addJointServiceCB(gazebo_msgs::AddJoint::Request& req,
   if(joint_effort_.find(req.name) == joint_effort_.end())
   {
     std::cout << "Added joint : " << req.name << std::endl;
-    joint_effort_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::effort"));
+    joint_effort_[req.name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.name + "::effort"));
     effort_time_[req.name] = ros::Duration(req.effort_time);
-    joint_states_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::state"));
+    joint_states_[req.name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.name + "::state"));
 
     bool found_joint = false;
     const unsigned int timeout_cnt = 10;
@@ -2555,7 +2555,7 @@ bool GazeboRosApiPlugin::addTorqueSensorServiceCB(gazebo_msgs::AddTorqueSensor::
   if(joint_torque_.find(req.sensor_name) == joint_torque_.end())
   {
     std::cout << "Added torque sensor : " << req.sensor_name << std::endl;
-    joint_torque_[req.sensor_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name));
+    joint_torque_[req.sensor_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name));
 
     bool found_joint = false;
     for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
@@ -2595,12 +2595,12 @@ bool GazeboRosApiPlugin::addForceSensorServiceCB(gazebo_msgs::AddForceSensor::Re
      external_moment_z_.find(req.joint_name) == external_moment_z_.end())
   {
     std::cout << "Added force sensor : " << req.sensor_name << std::endl;
-    external_force_x_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fx"));
-    external_force_y_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fy"));
-    external_force_z_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fz"));
-    external_moment_x_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::mx"));
-    external_moment_y_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::my"));
-    external_moment_z_[req.joint_name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.sensor_name + "::mz"));
+    external_force_x_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fx"));
+    external_force_y_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fy"));
+    external_force_z_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::fz"));
+    external_moment_x_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::mx"));
+    external_moment_y_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::my"));
+    external_moment_z_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::mz"));
 
     bool found_joint = false;
     for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
@@ -2632,7 +2632,7 @@ bool GazeboRosApiPlugin::addForceSensorServiceCB(gazebo_msgs::AddForceSensor::Re
 
 void GazeboRosApiPlugin::readJointEffortsTimerCB(const ros::TimerEvent& e)
 {
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr>::iterator it;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it;
   double effort = 0.0;
 
   boost::mutex::scoped_lock lock(lock_);
@@ -2651,7 +2651,7 @@ void GazeboRosApiPlugin::readJointEffortsTimerCB(const ros::TimerEvent& e)
 
 void GazeboRosApiPlugin::writeJointStatesTimerCB(const ros::TimerEvent& e)
 {
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr>::iterator it;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it;
   double state = 0.0;
 
   boost::mutex::scoped_lock lock(lock_);
@@ -2665,7 +2665,7 @@ void GazeboRosApiPlugin::writeJointStatesTimerCB(const ros::TimerEvent& e)
 void GazeboRosApiPlugin::writeForcesTimerCB(const ros::TimerEvent& e)
 {
   boost::mutex::scoped_lock lock(lock_);
-  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr>::iterator it_tau;
+  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it_tau;
   for(it_tau = joint_torque_.begin(); it_tau != joint_torque_.end(); ++it_tau)
   {
     std::string joint_name = torque_sensor_to_joint_[it_tau->first];
