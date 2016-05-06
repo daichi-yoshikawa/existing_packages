@@ -379,9 +379,9 @@ private:
   ros::Publisher     pub_link_states_;
   ros::Publisher     pub_joint_states_;
   ros::Publisher     pub_model_states_;
-  int                pub_link_states_connection_count_;
-  int                pub_joint_states_connection_count_;
-  int                pub_model_states_connection_count_;
+  int32_t            pub_link_states_connection_count_;
+  int32_t            pub_joint_states_connection_count_;
+  int32_t            pub_model_states_connection_count_;
 
   // ROS comm
   boost::shared_ptr<ros::AsyncSpinner> async_ros_spin_;

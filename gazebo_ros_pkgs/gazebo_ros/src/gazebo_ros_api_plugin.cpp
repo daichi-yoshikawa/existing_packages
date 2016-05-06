@@ -768,7 +768,7 @@ bool GazeboRosApiPlugin::deleteModel(gazebo_msgs::DeleteModel::Request &req,
   }
 
   // delete wrench jobs on bodies
-  for (unsigned int i = 0 ; i < model->GetChildCount(); i ++)
+  for (uint32_t i = 0 ; i < model->GetChildCount(); i ++)
   {
     gazebo::physics::LinkPtr body = boost::dynamic_pointer_cast<gazebo::physics::Link>(model->GetChild(i));
     if (body)
@@ -780,7 +780,7 @@ bool GazeboRosApiPlugin::deleteModel(gazebo_msgs::DeleteModel::Request &req,
 
   // delete force jobs on joints
   gazebo::physics::Joint_V joints = model->GetJoints();
-  for (unsigned int i=0;i< joints.size(); i++)
+  for (uint32_t i=0;i< joints.size(); i++)
   {
     // look for it in jobs, delete joint force jobs
     clearJointForces(joints[i]->GetName());
@@ -908,14 +908,14 @@ bool GazeboRosApiPlugin::getModelProperties(gazebo_msgs::GetModelProperties::Req
     // get list of child bodies, geoms
     res.body_names.clear();
     res.geom_names.clear();
-    for (unsigned int i = 0 ; i < model->GetChildCount(); i ++)
+    for (uint32_t i = 0 ; i < model->GetChildCount(); i ++)
     {
       gazebo::physics::LinkPtr body = boost::dynamic_pointer_cast<gazebo::physics::Link>(model->GetChild(i));
       if (body)
       {
         res.body_names.push_back(body->GetName());
         // get list of geoms
-        for (unsigned int j = 0; j < body->GetChildCount() ; j++)
+        for (uint32_t j = 0; j < body->GetChildCount() ; j++)
         {
           gazebo::physics::CollisionPtr geom = boost::dynamic_pointer_cast<gazebo::physics::Collision>(body->GetChild(j));
           if (geom)
@@ -928,12 +928,12 @@ bool GazeboRosApiPlugin::getModelProperties(gazebo_msgs::GetModelProperties::Req
     res.joint_names.clear();
 
     gazebo::physics::Joint_V joints = model->GetJoints();
-    for (unsigned int i=0;i< joints.size(); i++)
+    for (uint32_t i=0;i< joints.size(); i++)
       res.joint_names.push_back( joints[i]->GetName() );
 
     // get children model names
     res.child_model_names.clear();
-    for (unsigned int j = 0; j < model->GetChildCount(); j++)
+    for (uint32_t j = 0; j < model->GetChildCount(); j++)
     {
       gazebo::physics::ModelPtr child_model = boost::dynamic_pointer_cast<gazebo::physics::Model>(model->GetChild(j));
       if (child_model)
@@ -955,7 +955,7 @@ bool GazeboRosApiPlugin::getWorldProperties(gazebo_msgs::GetWorldProperties::Req
 {
   res.sim_time = world_->GetSimTime().Double();
   res.model_names.clear();
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
     res.model_names.push_back(world_->GetModel(i)->GetName());
   gzerr << "disablign rendering has not been implemented, rendering is always enabled\n";
   res.rendering_enabled = true; //world->GetRenderEngineEnabled();
@@ -968,7 +968,7 @@ bool GazeboRosApiPlugin::getJointProperties(gazebo_msgs::GetJointProperties::Req
                                             gazebo_msgs::GetJointProperties::Response &res)
 {
   gazebo::physics::JointPtr joint;
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     joint = world_->GetModel(i)->GetJoint(req.joint_name);
     if (joint) break;
@@ -1249,7 +1249,7 @@ bool GazeboRosApiPlugin::setJointProperties(gazebo_msgs::SetJointProperties::Req
 {
   /// @todo: current settings only allows for setting of 1DOF joints (e.g. HingeJoint and SliderJoint) correctly.
   gazebo::physics::JointPtr joint;
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     joint = world_->GetModel(i)->GetJoint(req.joint_name);
     if (joint) break;
@@ -1263,45 +1263,45 @@ bool GazeboRosApiPlugin::setJointProperties(gazebo_msgs::SetJointProperties::Req
   }
   else
   {
-    for(unsigned int i=0;i< req.ode_joint_config.damping.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.damping.size();i++)
       joint->SetDamping(i,req.ode_joint_config.damping[i]);
 #if GAZEBO_MAJOR_VERSION >= 4
-    for(unsigned int i=0;i< req.ode_joint_config.hiStop.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.hiStop.size();i++)
       joint->SetParam("hi_stop",i,req.ode_joint_config.hiStop[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.loStop.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.loStop.size();i++)
       joint->SetParam("lo_stop",i,req.ode_joint_config.loStop[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.erp.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.erp.size();i++)
       joint->SetParam("erp",i,req.ode_joint_config.erp[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.cfm.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.cfm.size();i++)
       joint->SetParam("cfm",i,req.ode_joint_config.cfm[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.stop_erp.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.stop_erp.size();i++)
       joint->SetParam("stop_erp",i,req.ode_joint_config.stop_erp[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.stop_cfm.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.stop_cfm.size();i++)
       joint->SetParam("stop_cfm",i,req.ode_joint_config.stop_cfm[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.fudge_factor.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.fudge_factor.size();i++)
       joint->SetParam("fudge_factor",i,req.ode_joint_config.fudge_factor[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.fmax.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.fmax.size();i++)
       joint->SetParam("fmax",i,req.ode_joint_config.fmax[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.vel.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.vel.size();i++)
       joint->SetParam("vel",i,req.ode_joint_config.vel[i]);
 #else
-    for(unsigned int i=0;i< req.ode_joint_config.hiStop.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.hiStop.size();i++)
       joint->SetAttribute("hi_stop",i,req.ode_joint_config.hiStop[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.loStop.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.loStop.size();i++)
       joint->SetAttribute("lo_stop",i,req.ode_joint_config.loStop[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.erp.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.erp.size();i++)
       joint->SetAttribute("erp",i,req.ode_joint_config.erp[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.cfm.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.cfm.size();i++)
       joint->SetAttribute("cfm",i,req.ode_joint_config.cfm[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.stop_erp.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.stop_erp.size();i++)
       joint->SetAttribute("stop_erp",i,req.ode_joint_config.stop_erp[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.stop_cfm.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.stop_cfm.size();i++)
       joint->SetAttribute("stop_cfm",i,req.ode_joint_config.stop_cfm[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.fudge_factor.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.fudge_factor.size();i++)
       joint->SetAttribute("fudge_factor",i,req.ode_joint_config.fudge_factor[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.fmax.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.fmax.size();i++)
       joint->SetAttribute("fmax",i,req.ode_joint_config.fmax[i]);
-    for(unsigned int i=0;i< req.ode_joint_config.vel.size();i++)
+    for(uint32_t i=0;i< req.ode_joint_config.vel.size();i++)
       joint->SetAttribute("vel",i,req.ode_joint_config.vel[i]);
 #endif
 
@@ -1392,7 +1392,7 @@ bool GazeboRosApiPlugin::applyJointEffort(gazebo_msgs::ApplyJointEffort::Request
                                           gazebo_msgs::ApplyJointEffort::Response &res)
 {
   gazebo::physics::JointPtr joint;
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     joint = world_->GetModel(i)->GetJoint(req.joint_name);
     if (joint)
@@ -1426,12 +1426,12 @@ bool GazeboRosApiPlugin::applyJointEfforts(gazebo_msgs::ApplyJointEfforts::Reque
   GazeboRosApiPlugin::ForceJointJob* fjj[req.joint_name.size()];
   gazebo::physics::JointPtr joint[req.joint_name.size()];
 
-  for (unsigned int i = 0; i < req.joint_name.size(); ++i)
+  for (uint32_t i = 0; i < req.joint_name.size(); ++i)
   {
     fjj[i] = new GazeboRosApiPlugin::ForceJointJob;
 
     bool found = false;
-    for (unsigned int j = 0; j < world_->GetModelCount(); ++j)
+    for (uint32_t j = 0; j < world_->GetModelCount(); ++j)
     {
       joint[i] = world_->GetModel(j)->GetJoint(req.joint_name[i]);
       if (joint[i])
@@ -1455,7 +1455,7 @@ bool GazeboRosApiPlugin::applyJointEfforts(gazebo_msgs::ApplyJointEfforts::Reque
   }
 
   force_joint_jobs_.clear();
-  for (unsigned int i = 0; i < req.joint_name.size(); ++i)
+  for (uint32_t i = 0; i < req.joint_name.size(); ++i)
   {
     boost::mutex::scoped_lock lock(lock_);
     force_joint_jobs_.push_back(fjj[i]);
@@ -1567,7 +1567,7 @@ bool GazeboRosApiPlugin::setModelConfiguration(gazebo_msgs::SetModelConfiguratio
   if (req.joint_names.size() == req.joint_positions.size())
   {
     std::map<std::string, double> joint_position_map;
-    for (unsigned int i = 0; i < req.joint_names.size(); i++)
+    for (uint32_t i = 0; i < req.joint_names.size(); i++)
     {
       joint_position_map[req.joint_names[i]] = req.joint_positions[i];
     }
@@ -1675,7 +1675,7 @@ void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPt
   gazebo::physics::LinkPtr body;
   gazebo::physics::LinkPtr frame;
 
-  for(unsigned int i = 0; i < link_states->name.size(); ++i)
+  for(uint32_t i = 0; i < link_states->name.size(); ++i)
   {
     body = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(link_states->name[i]));
     frame = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(link_states->reference_frame[i]));
@@ -1952,11 +1952,11 @@ void GazeboRosApiPlugin::publishLinkStates()
   gazebo_msgs::LinkStates link_states;
 
   // fill link_states
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     gazebo::physics::ModelPtr model = world_->GetModel(i);
 
-    for (unsigned int j = 0 ; j < model->GetChildCount(); j ++)
+    for (uint32_t j = 0 ; j < model->GetChildCount(); j ++)
     {
       gazebo::physics::LinkPtr body = boost::dynamic_pointer_cast<gazebo::physics::Link>(model->GetChild(j));
 
@@ -1997,11 +1997,11 @@ void GazeboRosApiPlugin::publishJointStates()
   gazebo_msgs::JointStates joint_states;
 
   // fill joint_states
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     gazebo::physics::ModelPtr model = world_->GetModel(i);
 
-    for (unsigned int j = 0 ; j < model->GetChildCount(); j ++)
+    for (uint32_t j = 0 ; j < model->GetChildCount(); j ++)
     {
       gazebo::physics::JointPtr joint = boost::dynamic_pointer_cast<gazebo::physics::Joint>(model->GetChild(j));
 
@@ -2022,7 +2022,7 @@ void GazeboRosApiPlugin::publishModelStates()
   gazebo_msgs::ModelStates model_states;
 
   // fill model_states
-  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  for (uint32_t i = 0; i < world_->GetModelCount(); i ++)
   {
     gazebo::physics::ModelPtr model = world_->GetModel(i);
     model_states.name.push_back(model->GetName());
@@ -2255,7 +2255,7 @@ gazebo::math::Pose GazeboRosApiPlugin::parsePose(const std::string &str)
   std::vector<double> vals;
 
   boost::split(pieces, str, boost::is_any_of(" "));
-  for (unsigned int i = 0; i < pieces.size(); ++i)
+  for (uint32_t i = 0; i < pieces.size(); ++i)
   {
     if (pieces[i] != "")
     {
@@ -2288,7 +2288,7 @@ gazebo::math::Vector3 GazeboRosApiPlugin::parseVector3(const std::string &str)
   std::vector<double> vals;
 
   boost::split(pieces, str, boost::is_any_of(" "));
-  for (unsigned int i = 0; i < pieces.size(); ++i)
+  for (uint32_t i = 0; i < pieces.size(); ++i)
   {
     if (pieces[i] != "")
     {
@@ -2521,10 +2521,10 @@ bool GazeboRosApiPlugin::addJointServiceCB(gazebo_msgs::AddJoint::Request& req,
     joint_states_[req.name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.name + "::state"));
 
     bool found_joint = false;
-    const unsigned int timeout_cnt = 10;
-    unsigned int cnt = 0;
+    const uint32_t timeout_cnt = 10;
+    uint32_t cnt = 0;
 
-    for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
+    for (uint32_t i = 0; i < world_->GetModelCount(); ++i)
     {
       gazebo::physics::JointPtr joint;
       joint = world_->GetModel(i)->GetJoint(req.name);
@@ -2558,7 +2558,7 @@ bool GazeboRosApiPlugin::addTorqueSensorServiceCB(gazebo_msgs::AddTorqueSensor::
     joint_torque_[req.sensor_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name));
 
     bool found_joint = false;
-    for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
+    for (uint32_t i = 0; i < world_->GetModelCount(); ++i)
     {
       gazebo::physics::JointPtr joint;
       joint = world_->GetModel(i)->GetJoint(req.joint_name);
@@ -2603,7 +2603,7 @@ bool GazeboRosApiPlugin::addForceSensorServiceCB(gazebo_msgs::AddForceSensor::Re
     external_moment_z_[req.joint_name] = ahl_utils::SharedMemoryPtr<double>(new ahl_utils::SharedMemory<double>(req.sensor_name + "::mz"));
 
     bool found_joint = false;
-    for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
+    for (uint32_t i = 0; i < world_->GetModelCount(); ++i)
     {
       gazebo::physics::JointPtr joint;
       joint = world_->GetModel(i)->GetJoint(req.joint_name);
