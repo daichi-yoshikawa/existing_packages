@@ -91,14 +91,14 @@ GazeboRosApiPlugin::~GazeboRosApiPlugin()
 
   // Delete Force and Wrench Jobs
   boost::mutex::scoped_lock lock(lock_);
-  for (std::vector<GazeboRosApiPlugin::ForceJointJob*>::iterator iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
+  for (auto iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
   {
     delete (*iter);
     iter = force_joint_jobs_.erase(iter);
   }
   force_joint_jobs_.clear();
   ROS_DEBUG_STREAM_NAMED("api_plugin","ForceJointJobs deleted");
-  for (std::vector<GazeboRosApiPlugin::WrenchBodyJob*>::iterator iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();)
+  for (auto iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();)
   {
     delete (*iter);
     iter = wrench_body_jobs_.erase(iter);
@@ -1504,7 +1504,7 @@ bool GazeboRosApiPlugin::clearJointForces(std::string joint_name)
   while(search)
   {
     search = false;
-    for (std::vector<GazeboRosApiPlugin::ForceJointJob*>::iterator iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();++iter)
+    for (auto iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();++iter)
     {
       if ((*iter)->joint->GetName() == joint_name)
       {
@@ -1532,7 +1532,7 @@ bool GazeboRosApiPlugin::clearBodyWrenches(std::string body_name)
   while(search)
   {
     search = false;
-    for (std::vector<GazeboRosApiPlugin::WrenchBodyJob*>::iterator iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();++iter)
+    for (auto iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();++iter)
     {
       //ROS_ERROR("search %s %s",(*iter)->body->GetScopedName().c_str(), body_name.c_str());
       if ((*iter)->body->GetScopedName() == body_name)
@@ -1870,7 +1870,7 @@ void GazeboRosApiPlugin::wrenchBodySchedulerSlot()
   // MDMutex locks in case model is getting deleted, don't have to do this if we delete jobs first
   // boost::recursive_mutex::scoped_lock lock(*world->GetMDMutex());
   boost::mutex::scoped_lock lock(lock_);
-  for (std::vector<GazeboRosApiPlugin::WrenchBodyJob*>::iterator iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();)
+  for (auto iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();)
   {
     // check times and apply wrench if necessary
     if (ros::Time(world_->GetSimTime().Double()) >= (*iter)->start_time)
@@ -1904,7 +1904,7 @@ void GazeboRosApiPlugin::forceJointSchedulerSlot()
   // MDMutex locks in case model is getting deleted, don't have to do this if we delete jobs first
   // boost::recursive_mutex::scoped_lock lock(*world->GetMDMutex());
   boost::mutex::scoped_lock lock(lock_);
-  for (std::vector<GazeboRosApiPlugin::ForceJointJob*>::iterator iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
+  for (auto iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
   {
     // check times and apply force if necessary
     if (ros::Time(world_->GetSimTime().Double()) >= (*iter)->start_time)
@@ -2177,7 +2177,7 @@ void GazeboRosApiPlugin::updateSDFAttributes(TiXmlDocument &gazebo_model_xml, st
   if (model_tixml)
   {
     // Update model name
-    if (model_tixml->Attribute("name") != NULL)
+    if (model_tixml->Attribute("name") != nullptr)
     {
       // removing old model name
       model_tixml->RemoveAttribute("name");
@@ -2366,7 +2366,7 @@ void GazeboRosApiPlugin::updateURDFName(TiXmlDocument &gazebo_model_xml, std::st
   // replace model name if one is specified by the user
   if (model_tixml)
   {
-    if (model_tixml->Attribute("name") != NULL)
+    if (model_tixml->Attribute("name") != nullptr)
     {
       // removing old model name
       model_tixml->RemoveAttribute("name");
@@ -2382,11 +2382,11 @@ void GazeboRosApiPlugin::walkChildAddRobotNamespace(TiXmlNode* robot_xml)
 {
   TiXmlNode* child = 0;
   child = robot_xml->IterateChildren(child);
-  while (child != NULL)
+  while (child != nullptr)
   {
     if (child->ValueStr().find(std::string("plugin")) == 0)
     {
-      if (child->FirstChildElement("robotNamespace") == NULL)
+      if (child->FirstChildElement("robotNamespace") == nullptr)
       {
         TiXmlElement* child_elem = child->ToElement()->FirstChildElement("robotNamespace");
         while (child_elem)
@@ -2632,11 +2632,10 @@ bool GazeboRosApiPlugin::addForceSensorServiceCB(gazebo_msgs::AddForceSensor::Re
 
 void GazeboRosApiPlugin::readJointEffortsTimerCB(const ros::TimerEvent& e)
 {
-  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it;
   double effort = 0.0;
 
   boost::mutex::scoped_lock lock(lock_);
-  for(it = joint_effort_.begin(); it != joint_effort_.end(); ++it)
+  for(auto it = joint_effort_.begin(); it != joint_effort_.end(); ++it)
   {
     it->second->read(effort);
 
@@ -2651,11 +2650,10 @@ void GazeboRosApiPlugin::readJointEffortsTimerCB(const ros::TimerEvent& e)
 
 void GazeboRosApiPlugin::writeJointStatesTimerCB(const ros::TimerEvent& e)
 {
-  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it;
   double state = 0.0;
 
   boost::mutex::scoped_lock lock(lock_);
-  for(it = joint_states_.begin(); it != joint_states_.end(); ++it)
+  for(auto it = joint_states_.begin(); it != joint_states_.end(); ++it)
   {
     state = joint_[it->first]->GetAngle(0).Radian();
     it->second->write(state);
@@ -2665,8 +2663,7 @@ void GazeboRosApiPlugin::writeJointStatesTimerCB(const ros::TimerEvent& e)
 void GazeboRosApiPlugin::writeForcesTimerCB(const ros::TimerEvent& e)
 {
   boost::mutex::scoped_lock lock(lock_);
-  std::map<std::string, ahl_utils::SharedMemoryPtr<double> >::iterator it_tau;
-  for(it_tau = joint_torque_.begin(); it_tau != joint_torque_.end(); ++it_tau)
+  for(auto it_tau = joint_torque_.begin(); it_tau != joint_torque_.end(); ++it_tau)
   {
     std::string joint_name = torque_sensor_to_joint_[it_tau->first];
     double state = joint_[joint_name]->GetForce(0);
@@ -2684,8 +2681,7 @@ void GazeboRosApiPlugin::writeForcesTimerCB(const ros::TimerEvent& e)
 
   gazebo::physics::JointWrench wrench;
 
-  std::map<std::string, std::string>::iterator it_f;
-  for(it_f = force_sensor_to_joint_.begin(); it_f != force_sensor_to_joint_.end(); ++it_f)
+  for(auto it_f = force_sensor_to_joint_.begin(); it_f != force_sensor_to_joint_.end(); ++it_f)
   {
     std::string joint_name = it_f->second;
     wrench = joint_[joint_name]->GetForceTorque(0u);

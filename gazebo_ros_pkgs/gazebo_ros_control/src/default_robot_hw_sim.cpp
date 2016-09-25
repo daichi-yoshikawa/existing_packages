@@ -219,7 +219,8 @@ bool DefaultRobotHWSim::initSim(
         // joint->SetMaxForce() must be called if joint->SetAngle() or joint->SetVelocity() are
         // going to be called. joint->SetMaxForce() must *not* be called if joint->SetForce() is
         // going to be called.
-        joint->SetMaxForce(0, joint_effort_limits_[j]);
+        //joint->SetMaxForce(0, joint_effort_limits_[j]);
+        joint->SetParam("max_force", 0, joint_effort_limits_[j]);
       }
     }
   }

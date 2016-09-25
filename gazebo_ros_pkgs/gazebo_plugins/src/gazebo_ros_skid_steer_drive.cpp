@@ -248,18 +248,23 @@ namespace gazebo {
 	 gzthrow(error);
    }
 
-   if (!joints[RIGHT_REAR]) {
-	 char error[200];
-	 snprintf(error, 200,
+    if (!joints[RIGHT_REAR]) {
+	  char error[200];
+	  snprintf(error, 200,
 		 "GazeboRosSkidSteerDrive Plugin (ns = %s) couldn't get right rear hinge joint named \"%s\"",
-		 this->robot_namespace_.c_str(), this->right_rear_joint_name_.c_str());
-	 gzthrow(error);
-   }
+		  this->robot_namespace_.c_str(), this->right_rear_joint_name_.c_str());
+	  gzthrow(error);
+    }
 
-    joints[LEFT_FRONT]->SetMaxForce(0, torque);
-    joints[RIGHT_FRONT]->SetMaxForce(0, torque);
-    joints[LEFT_REAR]->SetMaxForce(0, torque);
-    joints[RIGHT_REAR]->SetMaxForce(0, torque);
+    //joints[LEFT_FRONT]->SetMaxForce(0, torque);
+    //joints[RIGHT_FRONT]->SetMaxForce(0, torque);
+    //joints[LEFT_REAR]->SetMaxForce(0, torque);
+    //joints[RIGHT_REAR]->SetMaxForce(0, torque);
+
+    joints[LEFT_FRONT]->SetParam("max_force", 0, torque);
+    joints[RIGHT_FRONT]->SetParam("max_force", 0, torque);
+    joints[LEFT_REAR]->SetParam("max_force", 0, torque);
+    joints[RIGHT_REAR]->SetParam("max_force", 0, torque);
 
     // Make sure the ROS node for Gazebo has already been initialized
     if (!ros::isInitialized())
